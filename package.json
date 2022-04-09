@@ -1,5 +1,5 @@
 {
-  "name": "dis-algo-exe",
+  "name": "dae",
   "version": "0.0.1",
   "description": "This is a pattern used frequently in micro-services, where their is a need to distribute steps of algorithm/worflow across nodes(distributed hosts) to achieve resiliency &amp; speed.",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "test": "npm run build && npm run redisstart && cross-env REDISCON=redis://127.0.0.1:6379 npm run test-run",
     "build": "(npm run clean-build || node -v) && tsc && npm run copy-files && npm run docs",
     "redisstop": "docker stop TestCentralStore && ping 127.0.0.1 -c 3",
-    "redisstart": "(npm run redisstop || docker -v ) && docker run --name TestCentralStore -p 6379:6379 -itd --rm redis:latest",
+    "redisstart": "(npm run redisstop || docker -v ) && docker run --name TestCentralStore -v ${PWD}:\"/var/lib/luatest\" -p 6379:6379 -itd --rm redis:latest",
     "push": "npm whoami && npm test && npm version patch && cd ./dist && npm publish && cd .. & git push --tags",
     "docs": "typedoc"
   },
@@ -31,6 +31,11 @@
   },
   "homepage": "https://github.com/LRagji/DistributedAlgorithmExecutor#readme",
   "keywords": [
+    "distrubuted",
+    "algorithm",
+    "executor",
+    "workflow",
+    "orchestrator",
     "Laukik"
   ],
   "devDependencies": {
