@@ -22,22 +22,22 @@ export class DAE {
      * This method helps to populate variables that can be used within an algorithm steps and are common across.
      * It can throw when parameter "algorithmName" does not exits or if algorithm is marked as completed using {@link markAlgorithmCompleted | markAlgorithmCompleted method}
      */
-    public populateAlgorithmVariables(algorithmName: string, variables: Map<string, string | number | boolean>): Promise<boolean> {
+    public populateAlgorithmVariables(algorithmName: string, variables: Map<string, string>): Promise<boolean> {
         throw new Error("W.I.P");
     }
 }
 
 export interface IStepArgument {
-    type: "Literal" | "Reference"
-    value: string | number | boolean
+    type: "Literal" | "Reference" | "Resolved"
+    value: string
 }
 
 export interface IFetchedStep extends IStep {
-    return: (value: string | number | boolean) => Promise<boolean>
+    return: (value: string) => Promise<boolean>
 }
 
 export interface IStep {
-    OpCode: string
+    opCode: string
     algorithmName: string
     stepName: string
     args: Array<IStepArgument>
@@ -50,4 +50,10 @@ export interface IRedisClient {
     run(commandArgs: string[]): Promise<any>
     pipeline(commands: string[][]): Promise<any>;
     script(filename: string, keys: string[], args: string[]): Promise<any>
+}
+
+interface IRedisStep extends IStep {
+    consumers: Array<string>
+    async: number
+    maximumTime: number
 }

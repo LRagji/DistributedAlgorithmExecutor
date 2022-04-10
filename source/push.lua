@@ -1,8 +1,5 @@
-
-Do we need a script for push ? its just lpush
-
-
-local aIS = KEYS[1] --Instruction Set or Backlog Redis List
+-- Do we need a script for push ? its just lpush
+local aIS = KEYS[1] -- Instruction Set or Backlog Redis List
 local aIP = KEYS[2] -- Instruction Pointer Redis Hashset
 local aCI = KEYS[3] -- Completed Instructions Redis List
 local aAI = KEYS[4] -- Async Instructions Redis List
@@ -19,7 +16,7 @@ local currentTimestampInSeconds = tonumber(tempTime[1])
 
 local returnArray = {}
 
-redis.call("LPUSH",aIS,stepPayload);
+redis.call("LPUSH", aIS, stepPayload);
 
-table.insert(returnArray,1)
+table.insert(returnArray, 1)
 return returnArray
