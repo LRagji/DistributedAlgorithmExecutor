@@ -33,10 +33,10 @@ if (IPExists == 1) then
     local stepPeek = {}
     -- Fetch Instruction Pointer
     local temp = redis.call("HGETALL", aIP)
-    if (type(temp) == boolean) then
+    if (type(temp) == "boolean") then
         stepPeek = nil
     else
-        -- Convert IP into Stringified IRedisStep Interface
+        -- Convert IP into IRedisStep Interface
         for index = 1, #temp, 2 do
             local propName = temp[index]
             local propValue = temp[index + 1]
@@ -125,9 +125,10 @@ if (IPExists == 1) then
 
                     -- Populate Instruction Pointer & Pop backlog
                     redis.call("HSET", aIP, "start", stepPeek["start"], "consumer", stepPeek["consumer"],
-                        "argsFetchCompleted", argsFetchCompleted, "consumers", cjson.encode(stepPeek["consumers"]),
-                        "async", stepPeek["async"], "maximumTime", stepPeek["maximumTime"], "opCode",
-                        stepPeek["opCode"], "stepName", stepPeek["stepName"], "args", cjson.encode(stepPeek["args"])) -- Populate Instruction Pointer
+                        "argsFetchCompleted", stepPeek["argsFetchCompleted"], "consumers",
+                        cjson.encode(stepPeek["consumers"]), "async", stepPeek["async"], "maximumTime",
+                        stepPeek["maximumTime"], "opCode", stepPeek["opCode"], "stepName", stepPeek["stepName"], "args",
+                        cjson.encode(stepPeek["args"])) -- Populate Instruction Pointer
 
                     return returnArray
 
@@ -141,7 +142,7 @@ if (IPExists == 1) then
                         log["consumer"] = consumerName
                         log["state"] = "ASYNC"
                         log["stack"] = redis.call("DUMP", aIP)
-                        redis.call("LPUSH", aAI, cjson.encode(log))
+                        redis.call("HSET", aAI, stepPeek["stepName"], cjson.encode(log))
 
                         -- Delete previous instruction Pointer
                         redis.call("DEL", aIP)
@@ -161,7 +162,7 @@ if (IPExists == 1) then
 else
     -- Next or start state
     local stepPeek = redis.call("LRANGE", aIS, -1, -1)
-    if (type(stepPeek) == boolean) then
+    if (#stepPeek <= 0) then
         stepPeek = nil
         -- This is when there are no more instructions/steps in the algo
     else
